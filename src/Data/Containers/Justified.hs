@@ -20,7 +20,7 @@ module Data.Containers.Justified
 import Data.Containers as Containers
 import Data.Bifunctor (Bifunctor(first))
 
-type role JContainer nominal nominal
+type role JContainer nominal representational
 newtype JContainer ph cont = MkJContainer cont
   deriving (Show, Eq, Ord)
 
@@ -30,7 +30,7 @@ unJustifyContainer (MkJContainer cont) = cont
 withJContainer :: cont -> (forall ph. JContainer ph cont -> r) -> r
 withJContainer cont with = with (MkJContainer cont)
 
-type role JKey nominal nominal
+type role JKey nominal representational
 newtype JKey ph key = MkJKey key
 type JKeyOf ph set = JKey ph (ContainerKey set)
 
