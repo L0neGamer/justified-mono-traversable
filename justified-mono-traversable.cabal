@@ -1,0 +1,52 @@
+cabal-version: 2.2
+
+name:           justified-mono-traversable
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/githubuser/justified-mono-traversable#readme>
+homepage:       https://github.com/githubuser/justified-mono-traversable#readme
+bug-reports:    https://github.com/githubuser/justified-mono-traversable/issues
+author:         BenjaminMcRae
+copyright:      2023 Benjamin McRae
+license:        BSD-3-Clause
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+    CHANGELOG.md
+
+source-repository head
+  type: git
+  location: https://github.com/githubuser/justified-mono-traversable
+
+library
+  exposed-modules:
+      Data.Containers.Justified
+  other-modules:
+      Paths_justified_mono_traversable
+  autogen-modules:
+      Paths_justified_mono_traversable
+  hs-source-dirs:
+      justified-mono-traversable
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
+  build-depends:
+      base >=4.7 && <5
+    , containers
+    , hashable
+    , mono-traversable
+    , unordered-containers
+  default-language: Haskell2010
+
+test-suite justified-mono-traversable-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_justified_mono_traversable
+  autogen-modules:
+      Paths_justified_mono_traversable
+  hs-source-dirs:
+      test
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , justified-mono-traversable
+  default-language: Haskell2010
