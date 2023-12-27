@@ -28,7 +28,6 @@ import qualified Data.Map.Strict as M
 
 type role JContainer nominal representational
 newtype JContainer ph cont = MkJContainer cont
-  deriving (Show, Eq, Ord)
 
 unJustifyContainer :: JContainer ph cont -> cont
 unJustifyContainer (MkJContainer cont) = cont
@@ -44,12 +43,12 @@ unJustifyKey (MkJKey cont) = cont
 
 class IsJustifiedSet set key where
   keysJ :: JContainer ph set -> [JKey ph key]
-  memberJ :: ContainerKey set -> JContainer ph set -> Maybe (JKey ph key)
+  memberJ :: key -> JContainer ph set -> Maybe (JKey ph key)
 
   default keysJ :: (SetContainer set, key ~ ContainerKey set) => JContainer ph set -> [JKey ph key]
   keysJ (MkJContainer set) = MkJKey <$> keys set
 
-  default memberJ :: (SetContainer set, key ~ ContainerKey set) => ContainerKey set -> JContainer ph set ->  Maybe (JKey ph key)
+  default memberJ :: (SetContainer set, key ~ ContainerKey set) => key -> JContainer ph set ->  Maybe (JKey ph key)
   memberJ key (MkJContainer set) = if member key set then Just (MkJKey key) else Nothing
 
 instance (Hashable k) => IsJustifiedSet (HM.HashMap k v) k
@@ -113,7 +112,7 @@ class IsJustifiedSet map key => IsJustifiedMap map key value | map key -> value 
     Just val -> val
     Nothing -> error "Data.Containers.Justified has been subverted; somehow a key was found that was not in the map"
 
-  default memberMapJ :: JustifiedMapConstraint map key value => key -> JContainer ph map -> Maybe (JKey ph key, value)
+  default memberMapJ :: key -> JContainer ph map -> Maybe (JKey ph key, value)
   memberMapJ key jMap = (\jKey -> (jKey, lookupJ jKey jMap)) <$> memberJ key jMap
 
   default adjustMapJ :: JustifiedMapConstraint map key value => (value -> value) -> JKey ph key -> JContainer ph map -> JContainer ph map
