@@ -37,6 +37,9 @@ library:
   source-dirs: src
   dependencies:
     - mono-traversable
+    - hashable
+    - unordered-containers
+    - containers
 
 executables:
   justified-mono-traversable-exe:
