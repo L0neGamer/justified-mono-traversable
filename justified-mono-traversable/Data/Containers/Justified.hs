@@ -37,6 +37,7 @@ withJContainer cont with = with (MkJContainer cont)
 
 type role JKey nominal representational
 newtype JKey ph key = MkJKey key
+  deriving (Eq)
 
 unJustifyKey :: JKey ph cont -> cont
 unJustifyKey (MkJKey cont) = cont
