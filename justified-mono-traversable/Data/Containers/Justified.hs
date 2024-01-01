@@ -44,15 +44,19 @@ unJustifyKey :: JKey ph cont -> cont
 unJustifyKey (MkJKey cont) = cont
 
 -- | Relation between keys and sets, giving methods to get justified keys from 
+-- a container.
+--
+-- Not much point defining this for sets ironically enough, since any operations
+-- relating to checking contents are trivial when a JKey is present.
 class IsJustifiedSet set key where
-  -- | Get all the keys in the container.
   {-# INLINE keysJ #-}
+  -- | Get all the keys in the container.
   keysJ :: JContainer ph set -> [JKey ph key]
+  {-# INLINE memberJ #-}
   -- | Get proof that a key exists in the container.
   --
   -- If there were a function `memberJ' :: JKey ph key -> JContainer ph set -> Bool`,
   -- it should always return True, and hence is not provided here.
-  {-# INLINE memberJ #-}
   memberJ :: key -> JContainer ph set -> Maybe (JKey ph key)
 
   default keysJ :: (SetContainer set, key ~ ContainerKey set) => JContainer ph set -> [JKey ph key]
@@ -64,6 +68,7 @@ class IsJustifiedSet set key where
 instance (Hashable k) => IsJustifiedSet (HM.HashMap k v) k
 instance (Ord k) => IsJustifiedSet (M.Map k v) k
 
+-- | Convenience constraint for the default definitions.
 type JustifiedMapConstraint map key value = (IsMap map, key ~ ContainerKey map, value ~ MapValue map)
 
 -- | The class of types that we can get justified keys from, and using those
