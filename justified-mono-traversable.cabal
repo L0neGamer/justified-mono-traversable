@@ -34,7 +34,7 @@ library
     , hashable
     , mono-traversable
     , unordered-containers
-  default-language: Haskell2010
+  default-language: GHC2021
 
 test-suite justified-mono-traversable-test
   type: exitcode-stdio-1.0
@@ -49,4 +49,4 @@ test-suite justified-mono-traversable-test
   build-depends:
       base >=4.7 && <5
     , justified-mono-traversable
-  default-language: Haskell2010
+  default-language: GHC2021
