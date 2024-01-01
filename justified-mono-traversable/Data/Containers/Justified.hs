@@ -8,13 +8,17 @@
 {-# LANGUAGE ConstraintKinds #-}
 
 module Data.Containers.Justified
-  ( JContainer
+  (
+  -- * Basic justified container operations, including creation and unwrapping.
+    JContainer
   , unJustifyContainer
   , withJContainer
 
+  -- * The type for a justified key, and how to unwrap it.
   , JKey
   , unJustifyKey
 
+  -- * Type classes to operate on justified containers
   , IsJustifiedSet (..)
   , IsJustifiedMap (..)
   ) where
@@ -46,7 +50,7 @@ unJustifyContainer (MkJContainer cont) = cont
 --
 -- Mostly useful when `cont` has an `IsJustifiedMap` instance. 
 withJContainer :: cont -> (forall ph. JContainer ph cont -> r) -> r
-withJContainer cont with = with (MkJContainer cont)
+withJContainer cont with = with (MkJContainer cont) 
 
 -- | A key of a value that is known to be in a container. Due to existential
 -- types in `withJContainer`, each key must be associated with a given container,
@@ -60,7 +64,7 @@ type role JKey nominal representational
 unJustifyKey :: JKey ph key -> key
 unJustifyKey (MkJKey key) = key
 
--- | Relation between keys and sets, giving methods to get justified keys from 
+-- | Relation between keys and sets, giving methods to get justified keys from
 -- a container.
 --
 -- Not much point defining this for sets ironically enough, since any operations
