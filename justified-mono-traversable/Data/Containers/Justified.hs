@@ -27,21 +27,38 @@ import Data.Hashable (Hashable)
 import qualified Data.HashMap.Strict as HM
 import qualified Data.Map.Strict as M
 
-type role JContainer nominal representational
+-- | A justified container that can be trusted to have operations that have a
+-- level risk otherwise, such as lookups that are normally failable.
+--
+-- Can only be constructed using `withJContainer`.
 newtype JContainer ph cont = MkJContainer cont
+type role JContainer nominal representational
 
+-- | Extract the container from its justified wrapping.
 unJustifyContainer :: JContainer ph cont -> cont
 unJustifyContainer (MkJContainer cont) = cont
 
+-- | Using a continuation and existentially defined types, make it so we can
+-- justify the operations we perform on the container.
+-- 
+-- Using the phantom type and the `forall`, we can guarantee that nothing 
+-- leaks out, and that operations are safe.
+--
+-- Mostly useful when `cont` has an `IsJustifiedMap` instance. 
 withJContainer :: cont -> (forall ph. JContainer ph cont -> r) -> r
 withJContainer cont with = with (MkJContainer cont)
 
-type role JKey nominal representational
+-- | A key of a value that is known to be in a container. Due to existential
+-- types in `withJContainer`, each key must be associated with a given container,
+-- and that means you shouldn't be able to use justified keys with different
+-- containers.
 newtype JKey ph key = MkJKey key
   deriving (Eq)
+type role JKey nominal representational
 
-unJustifyKey :: JKey ph cont -> cont
-unJustifyKey (MkJKey cont) = cont
+-- | Unwrap a justified key.
+unJustifyKey :: JKey ph key -> key
+unJustifyKey (MkJKey key) = key
 
 -- | Relation between keys and sets, giving methods to get justified keys from 
 -- a container.
