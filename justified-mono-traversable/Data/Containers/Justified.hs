@@ -36,6 +36,7 @@ import Data.Hashable (Hashable)
 
 import qualified Data.HashMap.Strict as HM
 import qualified Data.Map.Strict as M
+import qualified Data.IntMap.Strict as IM
 
 -- | A justified container that can be trusted to have operations that have a
 -- level risk otherwise, such as lookups that are normally failable.
@@ -94,6 +95,7 @@ class IsJustifiedSet set key where
 
 instance (Hashable k) => IsJustifiedSet (HM.HashMap k v) k
 instance (Ord k) => IsJustifiedSet (M.Map k v) k
+instance IsJustifiedSet (IM.IntMap v) Int
 
 -- | Convenience constraint for the default definitions.
 type JustifiedMapConstraint map key value = (IsMap map, key ~ ContainerKey map, value ~ MapValue map)
@@ -282,3 +284,4 @@ class IsJustifiedSet map key => IsJustifiedMap map key value | map key -> value 
 
 instance (Hashable k) => IsJustifiedMap (HM.HashMap k v) k v
 instance (Ord k) => IsJustifiedMap (M.Map k v) k v
+instance IsJustifiedMap (IM.IntMap v) Int v
