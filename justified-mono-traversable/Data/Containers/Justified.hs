@@ -21,6 +21,9 @@ module Data.Containers.Justified
   -- * Type classes to operate on justified containers
   , IsJustifiedSet (..)
   , IsJustifiedMap (..)
+
+  -- ** Exported constraint alias
+  , JustifiedMapConstraint
   ) where
 
 import Data.Containers as Containers
