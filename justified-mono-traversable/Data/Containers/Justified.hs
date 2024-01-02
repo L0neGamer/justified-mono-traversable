@@ -1,14 +1,14 @@
 -- | Data structures and typeclasses for justifiable containers; that is, one must prove that a container has a key in it before you can use that key. As a result, you can then use that key freely on that container, theoretically without having to prove its presence again.
 --
 
-{-# LANGUAGE RankNTypes #-}
-{-# LANGUAGE RoleAnnotations #-}
-{-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE DefaultSignatures #-}
+{-# LANGUAGE ConstraintKinds        #-}
+{-# LANGUAGE DefaultSignatures      #-}
+{-# LANGUAGE FlexibleInstances      #-}
 {-# LANGUAGE FunctionalDependencies #-}
-{-# LANGUAGE TypeOperators #-}
-{-# LANGUAGE TypeFamilies #-}
-{-# LANGUAGE ConstraintKinds #-}
+{-# LANGUAGE RankNTypes             #-}
+{-# LANGUAGE RoleAnnotations        #-}
+{-# LANGUAGE TypeFamilies           #-}
+{-# LANGUAGE TypeOperators          #-}
 
 module Data.Containers.Justified
   (
@@ -29,14 +29,13 @@ module Data.Containers.Justified
   , JustifiedMapConstraint
   ) where
 
-import Data.Containers as Containers
-    ( IsMap(lookup, adjustMap, insertWith, unionWithKey, deleteMap, filterMap, mapWithKey, omapKeysWith, MapValue),
-      SetContainer(member, ContainerKey, keys) )
-import Data.Hashable (Hashable)
+import Data.Containers as Containers (IsMap (MapValue, adjustMap, deleteMap, filterMap, insertWith, lookup, mapWithKey, omapKeysWith, unionWithKey),
+                                      SetContainer (ContainerKey, keys, member))
+import Data.Hashable   (Hashable)
 
 import qualified Data.HashMap.Strict as HM
-import qualified Data.Map.Strict as M
-import qualified Data.IntMap.Strict as IM
+import qualified Data.IntMap.Strict  as IM
+import qualified Data.Map.Strict     as M
 
 -- | A justified container that can be trusted to have operations that have a
 -- level risk otherwise, such as lookups that are normally failable.
@@ -51,13 +50,13 @@ unJustifyContainer (MkJContainer cont) = cont
 
 -- | Using a continuation and existentially defined types, make it so we can
 -- justify the operations we perform on the container.
--- 
--- Using the phantom type and the `forall`, we can guarantee that nothing 
+--
+-- Using the phantom type and the `forall`, we can guarantee that nothing
 -- leaks out, and that operations are safe.
 --
--- Mostly useful when `cont` has an `IsJustifiedMap` instance. 
+-- Mostly useful when `cont` has an `IsJustifiedMap` instance.
 withJContainer :: cont -> (forall ph. JContainer ph cont -> r) -> r
-withJContainer cont with = with (MkJContainer cont) 
+withJContainer cont with = with (MkJContainer cont)
 
 -- | A key of a value that is known to be in a container. Due to existential
 -- types in `withJContainer`, each key must be associated with a given container,
@@ -120,7 +119,7 @@ class IsJustifiedSet map key => IsJustifiedMap map key value | map key -> value 
   -- value associated with that key.
   --
   -- By default, uses `lookupJ` and `memberJ`, but can be redefined if it can be
-  -- more efficiently defined. 
+  -- more efficiently defined.
   memberMapJ :: key -> JContainer ph map -> Maybe (JKey ph key, value)
   memberMapJ key jMap = (\jKey -> (jKey, lookupJ jKey jMap)) <$> memberJ key jMap
   {-# INLINE adjustMapJ #-}
@@ -257,7 +256,7 @@ class IsJustifiedSet map key => IsJustifiedMap map key value | map key -> value 
     where
     toOldKey (MkJKey key') = MkJKey key'
 
-  default filteringJ :: JustifiedMapConstraint map key value 
+  default filteringJ :: JustifiedMapConstraint map key value
     => (value -> Bool)
     -> JContainer ph map
     -> (forall ph'. (JKey ph' key -> JKey ph key) -> JContainer ph' map -> r)
