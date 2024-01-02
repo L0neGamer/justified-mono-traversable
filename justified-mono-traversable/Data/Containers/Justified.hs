@@ -1,3 +1,6 @@
+-- | Data structures and typeclasses for justifiable containers; that is, one must prove that a container has a key in it before you can use that key. As a result, you can then use that key freely on that container, theoretically without having to prove its presence again.
+--
+
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE RoleAnnotations #-}
 {-# LANGUAGE FlexibleInstances #-}
@@ -9,20 +12,20 @@
 
 module Data.Containers.Justified
   (
-  -- * Basic justified container operations, including creation and unwrapping.
+  -- ** Justified container operations
     JContainer
   , unJustifyContainer
   , withJContainer
 
-  -- * The type for a justified key, and how to unwrap it.
+  -- ** Justified key
   , JKey
   , unJustifyKey
 
-  -- * Type classes to operate on justified containers
+  -- ** Justified containers typeclasses
   , IsJustifiedSet (..)
   , IsJustifiedMap (..)
 
-  -- ** Exported constraint alias
+  -- ***
   , JustifiedMapConstraint
   ) where
 
@@ -79,7 +82,7 @@ class IsJustifiedSet set key where
   {-# INLINE memberJ #-}
   -- | Get proof that a key exists in the container.
   --
-  -- If there were a function `memberJ' :: JKey ph key -> JContainer ph set -> Bool`,
+  -- If there were a function `memberJBool :: JKey ph key -> JContainer ph set -> Bool`,
   -- it should always return True, and hence is not provided here.
   memberJ :: key -> JContainer ph set -> Maybe (JKey ph key)
 
@@ -103,7 +106,7 @@ type JustifiedMapConstraint map key value = (IsMap map, key ~ ContainerKey map, 
 -- `lookupJ`, `adjustMapJ`, `insertingWithJ`, `unioningWithKeyJ`, `deletingJ`, `filteringJ`, `mapWithKeyJ`, `mapKeysWithJ`
 --
 -- The following methods are defined in terms of other methods, and thus don't
--- have to be defined be a user unless greater efficiency is possible:
+-- have to by defined be a user unless greater efficiency is possible:
 -- `memberMapJ`, `insertingJ`, `unioningWithJ`, `unioningJ`, `mapToListJ`
 class IsJustifiedSet map key => IsJustifiedMap map key value | map key -> value where
   {-# INLINE lookupJ #-}
